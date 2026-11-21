@@ -2,6 +2,7 @@
 
 #include <string>
 #include<cstdint>
+#include<functional>
 #include<map>
 #include<memory>
 #include<vector>
@@ -14,29 +15,33 @@ enum class LogLevel {
     FATAL
 };
 
-enum class SinkType {
-    FILE,
-    CONSOLE,
-    DB
-};
+using SinkType = std::string;
 
 class SinkConfig {
     public:
-    std::string timeFormat;
     std::vector<LogLevel> loglevels;
     std::map<std::string,std::string> details;
 };
 
 class TimeFormat {
     public:
-    std::string toString(int64_t millisecs);
+    virtual std::string toString(int64_t millisecs) = 0;
+    virtual ~TimeFormat() = default;
 };
 
-class Message {
+class MessageBase{
     public:
     std::string content;
     LogLevel level;
     std::string sourceNamespace;
+};
+
+class Message: public MessageBase {
+    public:
+    std::string timestamp;
+
+    Message(const MessageBase& base, const std::string& timestamp)
+        : MessageBase(base), timestamp(timestamp) {}
 };
 
 class Sink {
@@ -50,4 +55,6 @@ void registerTimeFormats();
 std::shared_ptr<TimeFormat> getTimeFormat(std::string format);
 
 void registerSinks();
-std::shared_ptr<Sink> getSink(SinkType sinkType, const SinkConfig& config);
+using SinkFactory = std::function<std::shared_ptr<Sink>(const SinkConfig&)>;
+void registerSink(const SinkType& sinkType, SinkFactory factory);
+std::shared_ptr<Sink> getSink(const SinkType& sinkType, const SinkConfig& config);

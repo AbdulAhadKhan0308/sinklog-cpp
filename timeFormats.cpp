@@ -6,15 +6,9 @@
 #include<memory>
 #include<iomanip>
 #include<logging.hpp>
+#include<utils.hpp>
 
 using namespace std;
-
-int64_t millisecondsSinceEpoch() {
-    const auto now = std::chrono::system_clock::now();
-    return std::chrono::duration_cast<std::chrono::milliseconds>(
-        now.time_since_epoch()
-    ).count();
-}
 
 pair<bool,tm> toUtcTime(int64_t millisecs) {
     time_t secs = millisecs/1000;
