@@ -24,8 +24,13 @@ class Logger {
             auto sinkType = it->first;
             auto levels = it->second.loglevels;
 
+            auto sink = getSink(sinkType, it->second);
+            if (!sink) {
+                throw std::invalid_argument("Unsupported sink type");
+            }
+
             for(auto level:levels) {
-                logRoutes[level].push_back(getSink(sinkType));
+                logRoutes[level].push_back(sink);
             }
         }
     };

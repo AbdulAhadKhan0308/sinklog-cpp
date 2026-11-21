@@ -1,6 +1,10 @@
+#pragma once
+
 #include <string>
 #include<cstdint>
+#include<map>
 #include<memory>
+#include<vector>
 
 enum class LogLevel {
     DEBUG,
@@ -18,14 +22,14 @@ enum class SinkType {
 
 class SinkConfig {
     public:
-    string timeFormat;
-    vector<LogLevel> loglevels;
-    map<string,string> details;
+    std::string timeFormat;
+    std::vector<LogLevel> loglevels;
+    std::map<std::string,std::string> details;
 };
 
 class TimeFormat {
     public:
-    string toString(int64_t millisecs);
+    std::string toString(int64_t millisecs);
 };
 
 class Message {
@@ -37,7 +41,8 @@ class Message {
 
 class Sink {
     public:
-    virtual bool write();
+    virtual bool write(const Message& message) = 0;
+    virtual ~Sink() = default;
 };
 
 
@@ -45,4 +50,4 @@ void registerTimeFormats();
 std::shared_ptr<TimeFormat> getTimeFormat(std::string format);
 
 void registerSinks();
-std::shared_ptr<Sink> getSink(SinkType sinkType);
+std::shared_ptr<Sink> getSink(SinkType sinkType, const SinkConfig& config);
