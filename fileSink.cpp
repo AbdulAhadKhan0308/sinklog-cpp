@@ -12,17 +12,6 @@
 
 using namespace std;
 
-static string toString(LogLevel level) {
-    switch (level) {
-        case LogLevel::DEBUG: return "DEBUG";
-        case LogLevel::INFO: return "INFO";
-        case LogLevel::WARN: return "WARN";
-        case LogLevel::ERROR: return "ERROR";
-        case LogLevel::FATAL: return "FATAL";
-    }
-    return "?";
-}
-
 static bool isRotationTimestamp(const string& value) {
     return !value.empty() && all_of(value.begin(), value.end(), [](unsigned char c) { return isdigit(c) || c == '-'; });
 }

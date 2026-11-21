@@ -4,7 +4,7 @@
 #include<string>
 #include<stdexcept>
 #include<logging.hpp>
-#include<fileSink.hpp>
+#include<consoleSink.hpp>
 
 using namespace std;
 
@@ -25,8 +25,8 @@ void registerSink(const SinkType& sinkType, SinkFactory factory) {
 
 void registerSinks() {
     lock_guard<mutex> lock(sinkFactoriesMutex);
-    sinkFactories.emplace("file", [](const SinkConfig& config) -> shared_ptr<Sink> {
-        return make_shared<FileSink>(config);
+    sinkFactories.emplace("console", [](const SinkConfig&) -> shared_ptr<Sink> {
+        return make_shared<ConsoleSink>();
     });
 }
 
