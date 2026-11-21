@@ -18,12 +18,11 @@ static bool isRotationTimestamp(const string& value) {
 
 static string rotationTimestamp() {
     const auto millisecs = millisecondsSinceEpoch();
-    const time_t secs = millisecs / 1000;
-    tm date{};
-    if (gmtime_s(&date, &secs) != 0) return to_string(millisecs);
+    const auto date = toUtcTime(millisecs);
+    if (!date.first) return to_string(millisecs);
 
     ostringstream out;
-    out << put_time(&date, "%Y%m%d-%H%M%S") << '-' << setw(3) << setfill('0') << millisecs % 1000;
+    out << put_time(&date.second, "%Y%m%d-%H%M%S") << '-' << setw(3) << setfill('0') << millisecs % 1000;
     return out.str();
 }
 

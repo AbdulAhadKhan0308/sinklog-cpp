@@ -10,15 +10,6 @@
 
 using namespace std;
 
-pair<bool,tm> toUtcTime(int64_t millisecs) {
-    time_t secs = millisecs/1000;
-    tm date{};
-    if(gmtime_s(&date,&secs)!=0) {
-            return {0,date};
-    }
-    return {1,date};
-}
-
 using TimeFormats = map<string,shared_ptr<TimeFormat>>;
 TimeFormats timeFormats;
 

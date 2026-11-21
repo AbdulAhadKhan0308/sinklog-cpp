@@ -14,6 +14,17 @@ int64_t millisecondsSinceEpoch() {
     ).count();
 }
 
+std::pair<bool,std::tm> toUtcTime(int64_t millisecs) {
+    const std::time_t secs = millisecs / 1000;
+    std::tm date{};
+#ifdef _WIN32
+    const bool ok = gmtime_s(&date, &secs) == 0;
+#else
+    const bool ok = gmtime_r(&secs, &date) != nullptr;
+#endif
+    return {ok, date};
+}
+
 std::string toString(LogLevel level) {
     switch (level) {
         case LogLevel::DEBUG: return "DEBUG";
